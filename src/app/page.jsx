@@ -14,6 +14,12 @@ export const metadata = {
 
 export default function HomePage() {
   const faqs = getAllItems('faqs')
+  const allPrograms = getAllItems('programs')
+  // Filter and sort programs in specific order: infant, toddler, preschool, multi-age
+  const programOrder = ['infant', 'toddler-program', 'preschool', 'elementary-school']
+  const programs = allPrograms
+    .filter(program => programOrder.includes(program.slug))
+    .sort((a, b) => programOrder.indexOf(a.slug) - programOrder.indexOf(b.slug))
 
   return (
     <>
@@ -21,7 +27,7 @@ export default function HomePage() {
       {/* Gradient background transition */}
       <div className="h-40 w-full bg-gradient-to-b from-purple-50 to-yellow-100 sm:h-48 xl:h-52" />
 
-      <HomeFeatureBlocks />
+      <HomeFeatureBlocks programs={programs} />
       <StaffAssurances />
       <FeaturedPrograms />
       <Faqs faqs={faqs} />

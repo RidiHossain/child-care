@@ -1,8 +1,18 @@
+'use client'
+
 import Image from 'next/image'
+import Link from 'next/link'
 import clsx from 'clsx'
+import { Fragment } from 'react'
+import {
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+} from '@headlessui/react'
 
 import { Icon } from '@/components/Icon'
 import { Button } from '@/components/Button'
+import { useModal } from '@/components/ModalContext'
 import checkmark from '/public/images/illustrations/checkmark.svg'
 import portraitImage1 from '/public/images/stock/home-blocks-01.jpg'
 import squareImage1 from '/public/images/stock/home-blocks-02.jpg'
@@ -32,13 +42,15 @@ const blocks = [
     tagline: 'A second home',
     headline: 'Where your child feels safe and loved',
     text: 'We create a warm, nurturing environment where children feel secure and valued. Our experienced caregivers build strong relationships with each child and family, ensuring your child receives the individual attention they need to thrive.',
-    action: { label: 'Schedule a Visit', href: '/contact', icon: true },
+    action: { label: 'Schedule a Visit', modal: true, icon: true },
     portraitImage: { src: portraitImage2, alt: 'Child in nurturing environment' },
     squareImage: { src: squareImage2, alt: 'Children in safe environment' },
   },
 ]
 
-export const HomeFeatureBlocks = () => {
+export const HomeFeatureBlocks = ({ programs }) => {
+  const { openModal } = useModal()
+
   return (
     <section className="overflow-hidden bg-yellow-100 px-4 pb-16 sm:px-6 sm:pb-24 lg:px-8">
       {/* Container */}
@@ -145,16 +157,70 @@ export const HomeFeatureBlocks = () => {
                 {block.text}
               </p>
               <div className="mt-6">
-                <Button href={block.action.href} variant="accent" size="sm">
-                  {block.action.label}
-                  {block.action.icon && (
-                    <Icon
-                      icon="arrowNarrowRight"
-                      className="ml-3 h-6 w-6 group-hover:animate-horizontal-bounce"
-                      stroke={2}
-                    />
-                  )}
-                </Button>
+                {block.action.label === 'View Programs' ? (
+                  <Popover className="relative">
+                    <PopoverButton className="outline-none group focus:outline-none">
+                      <div className="inline-flex items-center px-6 py-3 text-base font-medium text-white bg-purple-600 rounded-xl shadow-md transition-all duration-300 ease-in-out hover:bg-purple-700 hover:shadow-lg group-hover:scale-105">
+                        View Programs
+                        <Icon
+                          icon="chevronDown"
+                          className="ml-2 h-5 w-5 transform duration-300 ease-in-out group-data-[open]:rotate-180"
+                          stroke={2}
+                        />
+                      </div>
+                    </PopoverButton>
+
+                    <PopoverPanel
+                      transition
+                      className="absolute left-0 z-20 mt-3 w-64 rounded-2xl border border-gray-50 bg-white p-4 shadow-lg outline-none focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+                    >
+                      <div className="space-y-1">
+                        {programs.map((program, index) => (
+                          <div key={`home-dropdown-link-${program.data.name}`}>
+                            <Link
+                              href={`/programs/${program.slug}`}
+                              className="block w-full rounded-xl py-4"
+                            >
+                              <h5 className="text-lg font-semibold text-purple-600">
+                                {program.data.name}
+                              </h5>
+                            </Link>
+                            {index != programs.length - 1 && (
+                              <hr className="my-1 border-purple-200/30" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </PopoverPanel>
+                  </Popover>
+                ) : block.action.modal ? (
+                  <Button 
+                    onClick={openModal}
+                    variant="accent" 
+                    size="sm"
+                    className="cursor-pointer"
+                  >
+                    {block.action.label}
+                    {block.action.icon && (
+                      <Icon
+                        icon="arrowNarrowRight"
+                        className="ml-3 h-6 w-6 group-hover:animate-horizontal-bounce"
+                        stroke={2}
+                      />
+                    )}
+                  </Button>
+                ) : (
+                  <Button href={block.action.href} variant="accent" size="sm">
+                    {block.action.label}
+                    {block.action.icon && (
+                      <Icon
+                        icon="arrowNarrowRight"
+                        className="ml-3 h-6 w-6 group-hover:animate-horizontal-bounce"
+                        stroke={2}
+                      />
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           </div>

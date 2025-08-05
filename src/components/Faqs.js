@@ -43,25 +43,29 @@ export const Faqs = ({ faqs }) => {
             <Disclosure
               key={index}
               as="li"
-              className="w-full px-5 py-6 bg-white rounded-3xl sm:px-12 sm:py-8"
+              className="w-full bg-white rounded-3xl transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.02] cursor-pointer"
             >
-              <DisclosureButton className="flex items-center justify-between w-full text-lg group sm:text-xl">
-                <span className="font-medium text-left text-purple-900 duration-300 ease-in-out group-hover:text-purple-600">
-                  {faq.data.question}
-                </span>
-                <Icon
-                  icon="chevronDown"
-                  className="ml-3 h-6 w-6 flex-shrink-0 text-purple-700 duration-300 ease-in-out group-hover:text-purple-600 group-data-[open]:rotate-180 sm:ml-6"
-                  stroke={2}
-                />
-              </DisclosureButton>
+              {({ open }) => (
+                <DisclosureButton className="flex flex-col w-full text-left px-5 py-6 sm:px-12 sm:py-8">
+                  <div className="flex items-center justify-between w-full text-lg group sm:text-xl">
+                    <span className="font-medium text-left text-purple-900">
+                      {faq.data.question}
+                    </span>
+                    <Icon
+                      icon="chevronDown"
+                      className="ml-3 h-6 w-6 flex-shrink-0 text-purple-700 duration-300 ease-in-out group-hover:text-purple-600 group-data-[open]:rotate-180 sm:ml-6"
+                      stroke={2}
+                    />
+                  </div>
 
-              <DisclosurePanel
-                transition
-                className="mt-3 text-base leading-relaxed text-purple-800 data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in sm:text-lg"
-              >
-                {faq.data.answer}
-              </DisclosurePanel>
+                  <DisclosurePanel
+                    transition
+                    className="mt-3 text-base leading-relaxed text-purple-600 data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in sm:text-lg"
+                  >
+                    {faq.data.answer}
+                  </DisclosurePanel>
+                </DisclosureButton>
+              )}
             </Disclosure>
           ))}
         </ul>

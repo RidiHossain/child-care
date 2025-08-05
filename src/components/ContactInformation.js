@@ -4,6 +4,15 @@ import { getItemData } from '@/lib/getItems'
 export const ContactInformation = () => {
   const contact = getItemData('contact', 'global')
 
+  // Create Google Maps embed URL from the address
+  const createGoogleMapsUrl = (address) => {
+    const encodedAddress = encodeURIComponent(address)
+    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.1234567890123!2d-104.98765432109876!3d39.12345678901234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDA3JzM0LjQiTiAxMDTCsDU5JzE1LjYiVw!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus`
+  }
+
+  // For now, using a placeholder URL - you'll need to get the correct embed URL
+  const googleMapsUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d167191.00992521545!2d-123.27458275509369!3d49.09880995647801!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5485fce1db8802b7%3A0xe7af052ac3c8ad9b!2sDelta%2C%20BC!5e0!3m2!1sen!2sca!4v1754425567449!5m2!1sen!2sca"
+
   return (
     <section className="relative -mb-52 w-full -translate-y-52 bg-white px-4 pt-56 sm:px-6 sm:pt-64 lg:px-8 lg:pt-72">
       {/* Contact information container */}
@@ -84,11 +93,12 @@ export const ContactInformation = () => {
       <div className="mt-16 rounded-3xl lg:mx-auto lg:mt-24 lg:max-w-screen-xl">
         <iframe
           className="w-full rounded-3xl"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3086.1624232420972!2d-76.62270638437457!3d39.329905428938126!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c804df8502f88d%3A0x303d58494fa04c66!2sJohns%20Hopkins%20University!5e0!3m2!1sen!2sus!4v1629758627091!5m2!1sen!2sus"
+          src={googleMapsUrl}
           height={600}
           style={{ border: 0 }}
           allowFullScreen
           loading="lazy"
+          title="Bright Child Care Location"
         />
       </div>
     </section>

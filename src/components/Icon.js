@@ -63,6 +63,7 @@ const iconOptions = {
   playFilled: IconPlayerPlayFilled,
   starFilled: IconStarFilled,
   check: IconCheck,
+  checkmark: IconCheck, // Alias for checkmark
   certificate: IconCertificate,
   coffee: IconCoffee,
   plus: IconPlus,
@@ -77,6 +78,11 @@ const iconOptions = {
 export const Icon = ({ icon, className = '', stroke = 1.5 }) => {
   const iconName = icon || Object.keys(iconOptions)[0]
   const IconSVG = iconOptions[iconName]
+
+  if (!IconSVG) {
+    console.warn(`Icon "${iconName}" not found`)
+    return null
+  }
 
   return <IconSVG className={`${className}`} stroke={stroke} />
 }

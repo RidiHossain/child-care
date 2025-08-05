@@ -20,6 +20,8 @@ export function ScheduleVisitModal() {
     requestedStartDate: '',
     message: ''
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState(null) // 'success', 'error', null
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -29,13 +31,57 @@ export function ScheduleVisitModal() {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Here you would typically send the form data to your backend
-    console.log('Form submitted:', formData)
-    // For now, just close the modal
-    closeModal()
-    // Reset form
+    
+    setIsSubmitting(true)
+    setSubmitStatus(null)
+
+    try {
+      // Send form data to Resend API
+      const response = await fetch('/api/submit-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+      
+      if (response.ok) {
+        setSubmitStatus('success')
+        
+        // Reset form after a short delay
+        setTimeout(() => {
+          setFormData({
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            relationship: '',
+            childFirstName: '',
+            childLastName: '',
+            childDOB: '',
+            requestedStartDate: '',
+            message: ''
+          })
+          setSubmitStatus(null)
+          closeModal()
+        }, 4000)
+      } else {
+        const errorData = await response.json()
+        console.error('API error:', errorData)
+        setSubmitStatus('error')
+      }
+      
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const resetForm = () => {
     setFormData({
       firstName: '',
       lastName: '',
@@ -48,6 +94,7 @@ export function ScheduleVisitModal() {
       requestedStartDate: '',
       message: ''
     })
+    setSubmitStatus(null)
   }
 
   return (
@@ -103,6 +150,46 @@ export function ScheduleVisitModal() {
                     </div>
                   </div>
                 </div>
+
+                {/* Success/Error Messages */}
+                {submitStatus === 'success' && (
+                  <div className="mt-4 rounded-md bg-green-50 p-4">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <Icon icon="checkmark" className="h-5 w-5 text-green-400" />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-green-800">
+                          Thank you! Your visit request has been submitted successfully.
+                        </h3>
+                        <p className="mt-2 text-sm text-green-700">
+                          We'll contact you within 3-5 business days to schedule your visit.
+                        </p>
+                        <p className="mt-1 text-xs text-green-600">
+                          If you don't hear from us within 5 business days, please contact us directly.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <div className="mt-4 rounded-md bg-red-50 p-4">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <Icon icon="x" className="h-5 w-5 text-red-400" />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-red-800">
+                          There was an error submitting your request.
+                        </h3>
+                        <p className="mt-2 text-sm text-red-700">
+                          Please try again or contact us directly at ridihossain52@gmail.com
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -258,14 +345,24 @@ export function ScheduleVisitModal() {
                     />
                   </div>
 
-                  <div className="mt-5 sm:mt-4 flex justify-end">
+                  <div className="mt-5 sm:mt-4 flex justify-end space-x-3">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={resetForm}
+                      disabled={isSubmitting}
+                    >
+                      Reset
+                    </Button>
                     <Button
                       type="submit"
                       variant="accent"
                       size="sm"
                       className="w-full sm:w-auto"
+                      disabled={isSubmitting}
                     >
-                      Submit Request
+                      {isSubmitting ? 'Submitting...' : 'Submit Request'}
                     </Button>
                   </div>
                 </form>
